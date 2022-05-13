@@ -1,11 +1,12 @@
 import React from 'react';
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
-import auth from '../../firebas.init';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import auth from '../../../firebase.init';
 import { useForm } from "react-hook-form";
-import Loading from '../Shared/Loading/Loading';
-import { Link } from 'react-router-dom';
+import Loading from '../../Shared/Loading/Loading';
+import SocialLogin from '../../Shared/SocilalLogin/SocialLogin';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 const Login = () => {
-    const [signInWithGoogle, googleUser, googleLoading, googleError] = useSignInWithGoogle(auth);
+
     const { register, formState: { errors }, handleSubmit } = useForm();
     const [
         signInWithEmailAndPassword,
@@ -14,16 +15,20 @@ const Login = () => {
         emailError,
     ] = useSignInWithEmailAndPassword(auth);
 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+
     let singInError;
 
-    if (googleUser || emailUser) {
-        console.log(googleUser)
+    if (emailUser) {
+        navigate(from, { replace: true });
     }
-    if (emailLoading || googleLoading) {
+    if (emailLoading) {
         return <Loading></Loading>;
     }
-    if (emailError || googleError) {
-        singInError = <p className='text-red-500'><small>{emailError?.message || googleError?.message}</small></p>
+    if (emailError) {
+        singInError = <p className='text-red-500'><small>{emailError?.message}</small></p>
 
     }
 
@@ -33,7 +38,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex h-screen justify-center items-center">
+        <div assName="flex h-vh80 justify-center items-center">
             <div className="card w-96 bg-base-100 shadow-xl">
                 <div className="card-body">
                     <h2 className="text-center text-2xl font-bold">Login</h2>
@@ -91,10 +96,7 @@ const Login = () => {
                         <input className='btn w-full max-w-xs text-white' type="submit" value='Login' />
                     </form>
                     <p><small>New to Doctors Portal ?<Link className='text-secondary' to='/signup'>Create New Account</Link></small></p>
-                    <div className="divider">OR</div>
-                    <button onClick={() => signInWithGoogle()} className="btn btn-outline">
-                        Continue With Google
-                    </button>
+                    <SocialLogin></SocialLogin>
                 </div>
             </div>
         </div>
