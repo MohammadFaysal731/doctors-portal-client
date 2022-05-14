@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import auth from '../../../firebase.init';
 import { useForm } from "react-hook-form";
@@ -21,9 +21,11 @@ const Login = () => {
 
     let singInError;
 
-    if (emailUser) {
-        navigate(from, { replace: true });
-    }
+    useEffect(() => {
+        if (emailUser) {
+            navigate(from, { replace: true });
+        }
+    }, [emailUser, from, navigate])
     if (emailLoading) {
         return <Loading></Loading>;
     }
@@ -33,16 +35,17 @@ const Login = () => {
     }
 
     const onSubmit = data => {
-        console.log(data);
+        // console.log(data);
         signInWithEmailAndPassword(data.email, data.password);
     };
 
     return (
-        <div assName="flex h-vh80 justify-center items-center">
+        <div className="flex h-vh80 justify-center items-center">
             <div className="card w-96 bg-base-100 shadow-xl">
                 <div className="card-body">
                     <h2 className="text-center text-2xl font-bold">Login</h2>
                     <form onSubmit={handleSubmit(onSubmit)}>
+
 
                         <div className="form-control w-full max-w-xs">
                             <label className="label">
@@ -95,7 +98,7 @@ const Login = () => {
                         {singInError}
                         <input className='btn w-full max-w-xs text-white' type="submit" value='Login' />
                     </form>
-                    <p><small>New to Doctors Portal ?<Link className='text-secondary' to='/signup'>Create New Account</Link></small></p>
+                    <p><small>New To Doctors Portal ?<Link className='text-secondary' to='/signup'>Create New Account</Link></small></p>
                     <SocialLogin></SocialLogin>
                 </div>
             </div>
