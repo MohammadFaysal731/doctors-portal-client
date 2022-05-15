@@ -10,6 +10,12 @@ import Review from './Pages/Review/Review';
 import Header from './Pages/Shared/Header/Header';
 import NotFund from './Pages/Shared/NotFund/NotFund';
 import RequireAuth from './Pages/Shared/RequireAuth/RequireAuth';
+import Dashboard from './Pages/Dashboard/Dashboard/Dashboard';
+import { ToastContainer } from 'react-toastify';
+import MyAppointments from './Pages/Dashboard/MyAppointments.js/MyAppointments';
+import MyReview from './Pages/Dashboard/MyReview/MyReview';
+import MyHistory from './Pages/Dashboard/MyHistroy/MyHistory';
+
 
 
 
@@ -24,6 +30,11 @@ function App() {
             <Appointment></Appointment>
           </RequireAuth>
         }></Route>
+        <Route path='/dashboard' element={<RequireAuth> <Dashboard></Dashboard></RequireAuth>}>
+          <Route index element={<MyAppointments></MyAppointments>}></Route>
+          <Route path='review' element={<MyReview></MyReview>}></Route>
+          <Route path='history' element={<MyHistory></MyHistory>}></Route>
+        </Route>
         <Route path='/review' element={<Review></Review>}></Route>
         <Route path='/contact' element={<ContactUs></ContactUs>}></Route>
         <Route path='/about' element={<About></About>}></Route>
@@ -31,6 +42,7 @@ function App() {
         <Route path='/signup' element={<SignUp></SignUp>}></Route>
         <Route path='*' element={<NotFund></NotFund>}></Route>
       </Routes>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }
