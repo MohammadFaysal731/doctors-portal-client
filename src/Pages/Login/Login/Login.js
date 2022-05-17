@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import Loading from '../../Shared/Loading/Loading';
 import SocialLogin from '../../Shared/SocilalLogin/SocialLogin';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useToken from '../../../hooks/useToken';
 const Login = () => {
 
     const { register, formState: { errors }, handleSubmit } = useForm();
@@ -15,6 +16,8 @@ const Login = () => {
         emailError,
     ] = useSignInWithEmailAndPassword(auth);
 
+    const [token] = useToken(emailUser);
+
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
@@ -22,10 +25,10 @@ const Login = () => {
     let singInError;
 
     useEffect(() => {
-        if (emailUser) {
+        if (token) {
             navigate(from, { replace: true });
         }
-    }, [emailUser, from, navigate])
+    }, [token, from, navigate])
     if (emailLoading) {
         return <Loading></Loading>;
     }

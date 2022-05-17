@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigation } from 'react-day-picker';
 import { useCreateUserWithEmailAndPassword, useUpdateProfile } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import auth from '../../../firebase.init';
+import useToken from '../../../hooks/useToken';
 import Loading from '../../Shared/Loading/Loading';
 import SocialLogin from '../../Shared/SocilalLogin/SocialLogin';
 
@@ -19,13 +21,19 @@ const SignUp = () => {
 
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
 
+    const [token] = useToken(emailUser);
+
     const navigate = useNavigate();
 
     let singInError;
 
-    if (emailUser) {
-        console.log(emailUser)
-    }
+    useEffect(() => {
+        if (token) {
+            navigate('/appointment');
+        }
+    }, [token, navigate])
+
+
     if (emailLoading || updating) {
         return <Loading></Loading>;
     }
@@ -38,8 +46,8 @@ const SignUp = () => {
         console.log(data);
         await createUserWithEmailAndPassword(data.email, data.password);
         await updateProfile({ displayName: data.name });
-        alert('Updated profile');
-        navigate('/appointment');
+        toast('Create USer Success Fully');
+
     };
     return (
         <div className="flex h-vh80 justify-center items-center">
