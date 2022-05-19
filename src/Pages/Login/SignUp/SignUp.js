@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useNavigation } from 'react-day-picker';
 import { useCreateUserWithEmailAndPassword, useUpdateProfile } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
