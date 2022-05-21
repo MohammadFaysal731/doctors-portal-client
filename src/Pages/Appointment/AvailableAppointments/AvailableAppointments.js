@@ -6,20 +6,13 @@ import BookingModal from '../BookingModal/BookingModal';
 import Service from '../Service/Service';
 
 const AvailableAppointments = ({ date }) => {
-    // const [services, setServices] = useState([]);
+
     const [treatment, setTreatment] = useState(null);
 
     const formattedDate = format(date, 'PP')
 
     const { data: services, isLoading, refetch } = useQuery(['available', formattedDate], () => fetch(`https://glacial-atoll-10131.herokuapp.com/available?date=${formattedDate}`)
         .then(res => res.json()))
-
-    // useEffect(() => {
-    //     fetch(`https://glacial-atoll-10131.herokuapp.com/available?date=${formattedDate}`)
-    //         .then(res => res.json())
-    //         .then(data => setServices(data))
-    // }, [formattedDate])
-
     if (isLoading) {
         return <Loading></Loading>
     }

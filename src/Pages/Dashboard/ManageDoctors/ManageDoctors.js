@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import Loading from '../../Shared/Loading/Loading';
+import DeleteConfirmModal from '../DeleteConfirmModal/DeleteConfirmModal';
 import DoctorRow from '../DoctorRow/DoctorRow';
 
 const ManageDoctors = () => {
@@ -10,6 +11,8 @@ const ManageDoctors = () => {
             authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
     }).then(res => res.json()));
+
+    const [deletingDoctor, setDeletingDoctor] = useState(null);
 
     if (isLoading) {
         return <Loading></Loading>
@@ -36,14 +39,17 @@ const ManageDoctors = () => {
                                 doctor={doctor}
                                 key={doctor._id}
                                 index={index}
-                                refetch={refetch}
+                                setDeletingDoctor={setDeletingDoctor}
                             ></DoctorRow>)
                         }
-
-
                     </tbody>
                 </table>
             </div>
+            {deletingDoctor && <DeleteConfirmModal
+                deletingDoctor={deletingDoctor}
+                refetch={refetch}
+                setDeletingDoctor={setDeletingDoctor}
+            ></DeleteConfirmModal>}
         </div>
     );
 };
