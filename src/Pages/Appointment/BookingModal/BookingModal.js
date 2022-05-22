@@ -23,7 +23,7 @@ const BookingModal = ({ date, treatment, setTreatment, refetch }) => {
             patientName: user.displayName,
             phone: event.target.phone.value,
         }
-        fetch('https://glacial-atoll-10131.herokuapp.com/booking', {
+        fetch('http://localhost:5000/booking', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
