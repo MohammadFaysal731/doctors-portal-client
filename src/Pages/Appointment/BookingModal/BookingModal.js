@@ -23,10 +23,11 @@ const BookingModal = ({ date, treatment, setTreatment, refetch }) => {
             patientName: user.displayName,
             phone: event.target.phone.value,
         }
-        fetch('http://localhost:5000/booking', {
+        fetch('https://glacial-atoll-10131.herokuapp.com/booking', {
             method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('accessToken')}`
             },
             body: JSON.stringify(booking)
         })
@@ -39,9 +40,10 @@ const BookingModal = ({ date, treatment, setTreatment, refetch }) => {
                 else {
                     toast.error(`Already have An Appointment ON set, ${data.booking?.date} at ${data.booking?.slot}`);
                 }
-                refetch();
                 // to close the modal 
                 setTreatment(null);
+                refetch();
+
             });
 
 

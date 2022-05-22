@@ -10,7 +10,7 @@ const stripePromise = loadStripe('pk_test_51L1lD1Dhy3FUudtrZ47jK2dzc5JsfxJSzyOsY
 const Payment = () => {
     const { id } = useParams();
 
-    const url = `http://localhost:5000/booking/${id}`
+    const url = `https://glacial-atoll-10131.herokuapp.com/booking/${id}`
 
     const { data: appointment, isLoading } = useQuery(['booking', id], () => fetch(url, {
         method: 'GET',

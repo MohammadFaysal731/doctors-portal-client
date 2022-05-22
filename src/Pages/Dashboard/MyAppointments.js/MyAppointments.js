@@ -11,7 +11,7 @@ const MyAppointments = () => {
 
     useEffect(() => {
         if (user) {
-            fetch(`http://localhost:5000/booking?patient=${user.email}`, {
+            fetch(`https://glacial-atoll-10131.herokuapp.com/booking?patient=${user.email}`, {
                 method: 'GET',
                 headers: {
                     'authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -49,7 +49,7 @@ const MyAppointments = () => {
                     </thead>
                     <tbody>
                         {
-                            appointments.map((appointment, index) => <tr key={index}>
+                            appointments.map((appointment, index) => <tr key={appointment._id}>
                                 <th>{index + 1}</th>
                                 <td>{appointment.patientName}</td>
                                 <td>{appointment.date}</td>
@@ -57,7 +57,10 @@ const MyAppointments = () => {
                                 <td>{appointment.treatment}</td>
                                 <td>
                                     {(appointment.price && !appointment.paid) && <Link to={`/dashboard/payment/${appointment._id}`}><button className='btn btn-xs btn-success'>Pay</button></Link>}
-                                    {(appointment.price && appointment.paid) && <span className='btn btn-xs btn-success'>Paid</span>}
+                                    {(appointment.price && appointment.paid) && <div>
+                                        <p><span className='text-success'>Paid</span></p>
+                                        <p>Transaction id:<span className='text-success'>{appointment.transactionId}</span></p>
+                                    </div>}
                                 </td>
                             </tr>)
                         }

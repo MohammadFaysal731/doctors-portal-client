@@ -6,15 +6,17 @@ const CheckoutForm = ({ appointment }) => {
     const elements = useElements();
     const [cardError, setCardError] = useState('');
     const [success, setSuccess] = useState('');
+    const [processing, setProcessing] = useState(false);
+    const [transactionId, setTransactionId] = useState('');
     const [clientSecret, setClientSecret] = useState('');
-    const { price, patient, patientName } = appointment;
+    const { _id, price, patient, patientName } = appointment;
 
     useEffect(() => {
-        fetch('http://localhost:5000/create-payment-intent', {
+        fetch('https://glacial-atoll-10131.herokuapp.com/create-payment-intent', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
-                'authorization': `Bearer${localStorage.getItem('accessToken')}`
+                // 'authorization': `Bearer${localStorage.getItem('accessToken')}`
             },
             body: JSON.stringify({ price })
         })
@@ -47,7 +49,7 @@ const CheckoutForm = ({ appointment }) => {
 
         setCardError(error?.message || '');
         setSuccess('');
-
+        setProcessing(true);
 
         // confirm card payment
         const { paymentIntent, error: intentError } = await stripe.confirmCardPayment(
@@ -65,16 +67,35 @@ const CheckoutForm = ({ appointment }) => {
 
         if (intentError) {
             setCardError(intentError?.message);
+            setProcessing(false);
         }
         else {
             setCardError('');
+            setTransactionId(paymentIntent.id)
             console.log(paymentIntent)
             setSuccess('Congrats! Your Payment Is Completed');
+            // store payment on mongodb database
+            const payment = {
+                appointment: _id,
+                transactionId: paymentIntent.id,
+            }
+            fetch(`https://glacial-atoll-10131.herokuapp.com/booking/${_id}`, {
+                method: 'PATCH',
+                headers: {
+                    'content-type': 'application/json',
+                    // 'authorization': `Bearer${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify(payment)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    setProcessing(false);
 
+                })
         }
 
     }
-
+    // console.log(stripe, clientSecret);
     return (
         <>
             <form onSubmit={handleSubmit}>
@@ -94,7 +115,7 @@ const CheckoutForm = ({ appointment }) => {
                         },
                     }}
                 />
-                <button className='btn btn-success btn-sm m-4' type="submit" disabled={!stripe || !clientSecret}>
+                <button className='btn btn-success btn-sm m-4' type="submit" disabled={!stripe || !clientSecret || success}>
                     Pay
                 </button>
             </form>
@@ -102,7 +123,10 @@ const CheckoutForm = ({ appointment }) => {
                 cardError && <p className='text-red-500'>{cardError}</p>
             }
             {
-                success && <p className='text-green-500'>{success}</p>
+                success && <div className='text-green-500'>
+                    <p> {success}</p>
+                    <p>Your Transaction Id:<span className='text-purple-500 font-bold'>{transactionId}</span></p>
+                </div>
             }
         </>
     );
